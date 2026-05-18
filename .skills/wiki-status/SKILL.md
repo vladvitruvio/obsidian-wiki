@@ -292,7 +292,19 @@ You'll reuse this graph across all sections below.
    - Flag: pages that lost incoming links since last run ("link target may have been renamed: A, B")
    - If no previous snapshot exists, skip this section
 
-8. **Suggested questions.** Questions this wiki structure is uniquely positioned to answer — or that reveal gaps:
+8. **Tier assignment suggestions.** After computing hubs and bridges, recommend `tier:` changes. Never write `tier:` to pages — only surface suggestions so the human can decide.
+   - **Promote to `core`:** pages with ≥5 incoming links OR top-5 bridge position that currently have `tier: supporting` or no `tier:` field
+   - **Demote to `peripheral`:** pages with ≤1 incoming link AND not updated in 90+ days that currently have `tier: supporting` or `tier: core`
+   - Show up to 10 suggestions (promotions first, then demotions), formatted as:
+     ```
+     Tier Suggestions:
+     ↑ core    [[concepts/attention-mechanism]] — 14 incoming links, currently tier=supporting
+     ↑ core    [[entities/andrej-karpathy]]     — bridge (3 cluster pairs), currently unset
+     ↓ peripheral [[concepts/old-concept]]       — 0 incoming, 120 days stale
+     ```
+   - If all high-link pages already have `tier: core` and all low-link pages have `tier: peripheral`, emit: "Tier assignments look healthy — no changes suggested."
+
+9. **Suggested questions.** Questions this wiki structure is uniquely positioned to answer — or that reveal gaps:
    - From `^[ambiguous]` claims: "Resolve: What is the exact relationship between `X` and `Y`?"
    - From bridge pages: "Explore: Why does `P` connect `[cluster-A]` to `[cluster-B]`?"
    - From pages with zero incoming links: "Link: `X` has no incoming links — what should reference it?"
@@ -342,6 +354,11 @@ Write the result to `_insights.md` at the vault root. Overwrite freely — it's 
 - Newly connected: [[concepts/bar]], [[entities/baz]]
 - Lost incoming links: [[references/old-paper]] (target may have been renamed)
 
+## Tier Suggestions
+↑ core    [[concepts/attention-mechanism]] — 14 incoming links, currently tier=supporting
+↑ core    [[entities/andrej-karpathy]]     — top bridge (4 cluster pairs), currently unset
+↓ peripheral [[concepts/old-concept]]       — 0 incoming, 132 days stale
+
 ## Questions Worth Asking
 1. Resolve: What is the exact relationship between `scaling-laws` and `moore's-law`? (^[ambiguous] claim)
 2. Explore: Why does `exponential-growth` bridge #ml and #economics?
@@ -353,7 +370,7 @@ Write the result to `_insights.md` at the vault root. Overwrite freely — it's 
 
 After writing the file, append to `log.md`:
 ```
-- [TIMESTAMP] STATUS_INSIGHTS anchors=10 bridges=N cohesion_checked=T surprising=5 questions=7 delta="+N pages +M links"
+- [TIMESTAMP] STATUS_INSIGHTS anchors=10 bridges=N cohesion_checked=T surprising=5 questions=7 delta="+N pages +M links" tier_suggestions=N
 ```
 
 ### When to skip

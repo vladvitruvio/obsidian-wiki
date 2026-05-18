@@ -182,6 +182,16 @@ Before writing anything, plan which pages to update or create. Aim for 10-15 pag
 - If it's new, which category does it belong in?
 - What `[[wikilinks]]` should connect it to existing pages?
 
+**Apply tier-aware filtering to existing pages** (see `llm-wiki/SKILL.md`, Importance Tiering section):
+
+| Tier | Update decision |
+|---|---|
+| `core` | Always update if the source is even marginally relevant to this page |
+| `supporting` *(default)* | Update only when the source has clear new claims for this page |
+| `peripheral` | Skip unless this source is *primarily* about this specific topic |
+
+Pages without a `tier:` field are treated as `supporting`. When in doubt, err toward updating — the tier is a cost-control hint, not a hard lock.
+
 ### Step 5: Write/Update Pages
 
 For each page in your plan:
@@ -217,6 +227,7 @@ relationships:
 base_confidence: <computed>   # [0.0, 1.0] — see llm-wiki/SKILL.md Confidence formula
 lifecycle: draft
 lifecycle_changed: "<ISO date today>"
+tier: supporting              # default for new pages; promote to core when ≥5 incoming links
 ```
 
 Compute `base_confidence` using the formula from `llm-wiki/SKILL.md` (Confidence and Lifecycle section):
