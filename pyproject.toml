@@ -33,6 +33,11 @@ classifiers = [
 # Pure-stdlib CLI — installing skills needs no third-party runtime dependencies.
 dependencies = []
 
+# The MCP server (`obsidian-wiki mcp`) is the one feature that needs a
+# third-party runtime; keep it opt-in so the installer stays stdlib-only.
+[project.optional-dependencies]
+mcp = ["mcp>=1.2.0"]
+
 [project.urls]
 Homepage = "https://github.com/Ar9av/obsidian-wiki"
 Repository = "https://github.com/Ar9av/obsidian-wiki"

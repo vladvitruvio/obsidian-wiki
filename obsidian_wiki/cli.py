@@ -354,6 +354,46 @@ def cmd_list(args: argparse.Namespace) -> int:
     return 0
 
 
+MCP_CONFIG_TEMPLATE = """\
+{
+  "mcpServers": {
+    "obsidian-wiki": {
+      "command": "%(cmd)s",
+      "args": ["mcp"],
+      "env": { "OBSIDIAN_VAULT_PATH": "%(vault)s" }
+    }
+  }
+}"""
+
+
+def cmd_mcp(args: argparse.Namespace) -> int:
+    if args.print_config:
+        cmd = shutil.which("obsidian-wiki") or "obsidian-wiki"
+        raw = _read_config_value("OBSIDIAN_VAULT_PATH")
+        if raw and raw != "/path/to/your/vault":
+            expanded = Path(os.path.expandvars(os.path.expanduser(raw)))
+            vault = str(expanded if expanded.is_absolute() else (HOME / expanded).resolve())
+        else:
+            vault = "/path/to/your/vault"
+        print("# Add this to your Claude Desktop config")
+        print("# macOS: ~/Library/Application Support/Claude/claude_desktop_config.json")
+        print(MCP_CONFIG_TEMPLATE % {"cmd": cmd, "vault": vault})
+        return 0
+    try:
+        from obsidian_wiki.mcp_server import serve
+    except ModuleNotFoundError as exc:
+        if exc.name and exc.name.split(".")[0] == "mcp":
+            print(
+                "error: the MCP server needs the optional 'mcp' dependency.\n"
+                "   Install it with: pip install 'obsidian-wiki[mcp]'",
+                file=sys.stderr,
+            )
+            return 1
+        raise
+    serve()
+    return 0
+
+
 def cmd_info(args: argparse.Namespace) -> int:
     bundled = list_skills()
     print(f"obsidian-wiki {__version__}")
@@ -406,6 +446,14 @@ def build_parser() -> argparse.ArgumentParser:
     ip = sub.add_parser("info", help="show install paths, version, and config")
     ip.set_defaults(func=cmd_info)
 
+    mp = sub.add_parser("mcp", help="run the MCP server (stdio) for Claude Desktop et al.")
+    mp.add_argument(
+        "--print-config",
+        action="store_true",
+        help="print a claude_desktop_config.json snippet instead of running",
+    )
+    mp.set_defaults(func=cmd_mcp)
+
     return p
 
 
@@ -444,7 +492,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     # Warn about stale installs on every command except `setup` (which fixes it)
     # and `info` (which calls _check_stale itself with richer output).
-    if getattr(args, "command", None) not in ("setup", "info", None):
+    if getattr(args, "command", None) not in ("setup", "info", "mcp", None):
         _check_stale()
     try:
         return args.func(args)

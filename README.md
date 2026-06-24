@@ -525,6 +525,42 @@ claude
 
 Both skills follow the same Karpathy pattern as everything else. If a concept page already exists in the vault, it merges into it. Everything gets cross-linked with `[[wikilinks]]`, tracked in `.manifest.json`, and logged.
 
+## Using from Claude Desktop (MCP)
+
+The skills are designed for terminal agents that can read and write files. Claude Desktop can't touch your local vault on its own — native Claude.ai Skills run in a cloud sandbox with no access to your disk. The bridge is a local **MCP server** (`obsidian-wiki mcp`) that runs on your machine, so it *does* have filesystem access to the vault.
+
+Because the skills are instructions rather than programs, the server maps them onto MCP's native primitives:
+
+- **Prompts** — every bundled skill (`wiki-ingest`, `wiki-query`, `wiki-capture`, …) is exposed as an MCP prompt sourced from its `SKILL.md`. Invoking one in Desktop loads the full procedure, which Claude then executes — exactly how Claude Code runs a skill.
+- **Tools** — deterministic vault I/O, sandboxed to `OBSIDIAN_VAULT_PATH`: `list_pages`, `read_page`, `write_page` (validates required frontmatter and stamps `updated`), `search_vault`, `read_special`/`write_special`, `append_log`, `write_manifest`, `read_source`.
+- **Resources** — `wiki://conventions` (AGENTS.md), `wiki://index`, `wiki://hot`, `wiki://taxonomy`.
+
+Setup:
+
+```bash
+# 1. Install with the optional MCP extra
+pip install 'obsidian-wiki[mcp]'
+
+# 2. Print a ready-to-paste config block (fills in your vault path)
+obsidian-wiki mcp --print-config
+```
+
+Paste the block into Claude Desktop's config (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
+
+```json
+{
+  "mcpServers": {
+    "obsidian-wiki": {
+      "command": "obsidian-wiki",
+      "args": ["mcp"],
+      "env": { "OBSIDIAN_VAULT_PATH": "/absolute/path/to/your/vault" }
+    }
+  }
+}
+```
+
+Restart Desktop. The wiki skills appear in the prompt menu, and Claude can read and write your vault through the tools. This is **local-only** (stdio transport) — to reach the vault from Claude mobile/web you'd need a remote HTTP+OAuth server, which is out of scope here.
+
 ## Contributing
 
 This is early. The skills work, but there's room to make the brain smarter: better cross-referencing, sharper deduplication, bigger vaults, new ingest sources. If you've been chewing on this problem or have a workflow that could be a skill, PRs are welcome.
