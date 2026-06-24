@@ -515,6 +515,20 @@ The `[[path\|display text]]` wikilink form maps to `[display text](relative/path
 
 Every write skill reads `OBSIDIAN_LINK_FORMAT` from config before generating links and applies the correct format.
 
+## Timestamp Convention
+
+All timestamps written to the vault — frontmatter `created`/`updated`, `log.md` entries, `hot.md`'s `updated`, `lifecycle_changed`, manifest `ingested_at`, and `_raw/` filename date prefixes — use the timezone in `OBSIDIAN_TZ` from the resolved config.
+
+| Setting | Meaning |
+|---|---|
+| `OBSIDIAN_TZ=America/New_York` | IANA zone name — stamp all times in this zone |
+| *(unset)* | Use the machine's **local** timezone (never UTC) |
+
+Rules:
+1. Resolve `OBSIDIAN_TZ` from config alongside `OBSIDIAN_VAULT_PATH`. If set, convert "now" to that zone before formatting; if unset, use local time.
+2. Dates are `YYYY-MM-DD`; full timestamps are `YYYY-MM-DD HH:MM` (or ISO-8601 with offset where a precise instant matters). Do **not** emit a trailing `Z` or UTC times.
+3. This affects only newly written timestamps — existing vault content is never rewritten.
+
 ## Config Resolution Protocol
 
 **All skills must resolve config using this algorithm — do not hard-code `.env` or `~/.obsidian-wiki/config` directly.** This ensures single-vault, multi-vault, project-local, and VPS setups all work correctly.
