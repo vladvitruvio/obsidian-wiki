@@ -388,6 +388,8 @@ Everything lives in `.skills/`. Each skill is a markdown file the agent reads wh
 | `wiki-update`           | Sync current project's knowledge into the vault   | `/wiki-update`           |
 | `wiki-export`           | Export vault graph to JSON, GraphML, Neo4j, HTML  | `/wiki-export`           |
 | `wiki-capture`          | Save the current conversation as a wiki note; `--quick` stages findings to `_raw/` | `/wiki-capture`          |
+| `wiki-granola`          | Ingest recent Granola call transcripts (verbatim, not the AI summary), deduped by meeting id | `/wiki-granola`          |
+| `wiki-journal`          | Ingest the free-form daily note (`journal/YYYY-MM-DD.md`) into the wiki; never deletes the note | `/wiki-journal`          |
 | `wiki-research`         | Autonomous multi-round web research, self-filed   | `/wiki-research [topic]` |
 | `wiki-dashboard`        | Create dynamic Obsidian Bases dashboard views     | `/wiki-dashboard`        |
 | `wiki-synthesize`       | Discover and fill synthesis gaps across concepts  | `/wiki-synthesize`       |
