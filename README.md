@@ -17,6 +17,14 @@ The pattern comes from Andrej Karpathy's [LLM Wiki gist](https://gist.github.com
 
 We built a framework around that idea. Every skill is a markdown file that any AI coding agent (Claude Code, Cursor, Windsurf, Pi, and others) reads and runs. Point it at an Obsidian vault, tell it what to remember, and the vault becomes a second brain you own.
 
+## Vlad's updates
+
+This is a personal fork with a few additions on top of upstream:
+
+- **`wiki-granola`** — ingest recent [Granola](https://www.granola.ai) call transcripts into the vault. It pulls the *verbatim* transcript (not Granola's AI summary), dedupes meetings by id so re-runs are no-ops, and distills each call along three axes: action items, tech/process improvements, and durable domain knowledge. Run with `/wiki-granola`.
+- **`wiki-journal`** — ingest a free-form daily note (`journal/YYYY-MM-DD.md`) into the vault. It infers where each jot belongs from its content and optional inline hints (`#thought`, `#draft`, `- [ ]`, `#file <where>`), files it into the right existing pages, and **never deletes the note** — the journal stays your permanent record. Run with `/wiki-journal`.
+- **Local MCP server** (`obsidian-wiki mcp`) — exposes the wiki skills as MCP prompts and vault I/O as tools so you can use `wiki-query`, `wiki-update`, and the rest against your local vault from **Claude Desktop**. See [Using from Claude Desktop (MCP)](#using-from-claude-desktop-mcp) below for setup.
+
 ## Quick Start
 
 ### Install via pip (recommended)
