@@ -14,7 +14,7 @@ Pure stdlib. Frontmatter is parsed with a minimal reader (no PyYAML dependency).
 
 Usage:
   wiki-graph-diff.py --vault /path/to/vault [--base origin/main] [--title "..."] \
-      [--workflow wiki-chat] [--needs-input "line one" --needs-input "line two"]
+      [--workflow wiki-claude-export] [--needs-input "line one" --needs-input "line two"]
 
 Writes the PR body to stdout.
 """

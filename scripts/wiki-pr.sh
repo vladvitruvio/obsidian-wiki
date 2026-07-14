@@ -112,7 +112,7 @@ case "$cmd" in
     ni_args=(); for q in "${needs[@]:-}"; do [[ -n "$q" ]] && ni_args+=(--needs-input "$q"); done
     python3 "$REPO/scripts/wiki-graph-diff.py" \
       --vault "$VAULT" --base "origin/main" --title "$title" --workflow "$workflow" \
-      "${ni_args[@]}" > "$body_file" || { echo "wiki-pr: body generation failed" >&2; exit 1; }
+      ${ni_args[@]+"${ni_args[@]}"} > "$body_file" || { echo "wiki-pr: body generation failed" >&2; exit 1; }
 
     if [[ "$dry" == "1" ]]; then
       echo "── branch: $branch"
