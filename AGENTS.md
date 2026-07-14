@@ -48,7 +48,8 @@ Skills live in `.skills/<name>/SKILL.md`. Match the user's intent to the right s
 | "set up my wiki" / "initialize" | `wiki-setup` |
 | "/wiki-history-ingest claude" / "/wiki-history-ingest codex" / "/wiki-history-ingest hermes" / "/wiki-history-ingest pi" | `wiki-history-ingest` |
 | "ingest" / "add this to the wiki" / "process these docs" / "process this export" / "ingest this data" / logs, transcripts / "/ingest-url <url>" / "add this URL" / "ingest this link" / "save this page" | `wiki-ingest` |
-| "/wiki-chat <folder>" / "ingest my claude.ai chats" / "process my Claude export" / "sync my claude.ai conversations" (points at an unzipped claude.ai export folder) | `wiki-chat` |
+| "/wiki-claude-export <folder>" / "ingest my claude.ai export" / "process my Claude data export" / "sync my exported claude.ai conversations" (points at an unzipped claude.ai export folder) | `wiki-claude-export` |
+| "/wiki-chat" / "save this chat to my wiki" / "document this session" / "capture this conversation and its artifacts" (running live in a claude.ai desktop / cowork session via the obsidian-wiki MCP) | `wiki-chat` |
 | "import my Claude history" / "mine my conversations" | `claude-history-ingest` |
 | "import my Codex history" / "mine my Codex sessions" | `codex-history-ingest` |
 | "import my Hermes history" / "mine my Hermes memories" / "ingest ~/.hermes" | `hermes-history-ingest` |
