@@ -569,6 +569,41 @@ Paste the block into Claude Desktop's config (`~/Library/Application Support/Cla
 
 Restart Desktop. The wiki skills appear in the prompt menu, and Claude can read and write your vault through the tools. This is **local-only** (stdio transport) — to reach the vault from Claude mobile/web you'd need a remote HTTP+OAuth server, which is out of scope here.
 
+## Using from ChatGPT Desktop (MCP)
+
+ChatGPT does not read Claude Desktop's local `mcpServers` JSON file. To make the same local wiki server available in ChatGPT clients, keep using `obsidian-wiki mcp` as the stdio MCP server and wrap it with OpenAI's **Secure MCP Tunnel**. The tunnel keeps the vault server private on your machine while giving ChatGPT an OpenAI-hosted MCP endpoint.
+
+Prerequisites:
+
+- A working local MCP server:
+
+  ```bash
+  obsidian-wiki mcp --print-config
+  ```
+
+- ChatGPT developer mode enabled in Settings → Apps & Connectors → Advanced settings.
+- A Platform `tunnel_id` and runtime API key from Platform tunnel settings.
+- The `tunnel-client` binary from Platform tunnel settings or the latest public OpenAI `tunnel-client` release.
+
+For a local stdio tunnel profile:
+
+```bash
+export CONTROL_PLANE_API_KEY="sk-..."
+
+tunnel-client init \
+  --sample sample_mcp_stdio_local \
+  --profile obsidian-wiki \
+  --tunnel-id tunnel_0123456789abcdef0123456789abcdef \
+  --mcp-command "$(command -v obsidian-wiki) mcp"
+
+tunnel-client doctor --profile obsidian-wiki --explain
+tunnel-client run --profile obsidian-wiki
+```
+
+Keep `tunnel-client run --profile obsidian-wiki` running while testing. Then open ChatGPT Settings → Connectors → Create, choose **Tunnel** under Connection, and select the tunnel or paste the `tunnel_id`. After the connector is created, start a new chat, open the tools menu near the composer, and add the wiki connector to the conversation.
+
+If the tunnel does not show up in ChatGPT, verify that it is associated with the target ChatGPT workspace, not only the Platform organization, and that the account has both ChatGPT developer-mode access and Platform tunnel use permission.
+
 ## Contributing
 
 This is early. The skills work, but there's room to make the brain smarter: better cross-referencing, sharper deduplication, bigger vaults, new ingest sources. If you've been chewing on this problem or have a workflow that could be a skill, PRs are welcome.
